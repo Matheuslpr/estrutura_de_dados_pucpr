@@ -1,17 +1,17 @@
-public class Livros {
+package Model;
+
+public class Livro {
 
     // Atributos
-
     private String titulo;
     private String autor;
     private int anoPublicacao;
 
     // Construtores
-
-    public Livros() {
+    public Livro() {
     }
 
-    public Livros(String titulo, String autor, int anoPublicacao) {
+    public Livro(String titulo, String autor, int anoPublicacao) {
         this.titulo = titulo;
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
@@ -50,5 +50,5 @@ public class Livros {
                 ", autor='" + autor + '\'' +
                 ", anoPublicacao=" + anoPublicacao +
                 '}';
-    }
+    };
 }
