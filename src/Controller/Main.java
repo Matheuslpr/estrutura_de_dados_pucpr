@@ -3,6 +3,7 @@ package Controller;
 import Model.Livro;
 import Service.Biblioteca;
 import Service.GerenciadorBiblioteca;
+import Service.SistemaRecomendacao;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,6 +13,7 @@ public class Main {
         // Criando uma instância do gerenciador de biblioteca
         GerenciadorBiblioteca gerenciador = new GerenciadorBiblioteca();
 
+        SistemaRecomendacao sistema = new SistemaRecomendacao();
         // Adicionando livros à biblioteca
         biblioteca.adicionarLivro(new Livro("Dom Casmurro" , "Machado de Assis" , 1899));
         biblioteca.adicionarLivro(new Livro("1984" , "George Orwell" , 1949));
@@ -59,7 +61,21 @@ public class Main {
         gerenciador.livroDevolvido("Clean Code"); // notifica Diego
         gerenciador.livroDevolvido("Clean Code"); // fila vazia
 
+        // Exibe o grafo completo
+        sistema.getGrafo().exibirGrafo();
 
+        // Simulação de usuários recebendo recomendações
+        sistema.recomendar("Ana",
+                "Clean Code",
+                "Refactoring");
+
+        sistema.recomendar("Bruno",
+                "Introduction to Algorithms",
+                "Designing Data-Intensive Apps");
+
+        sistema.recomendar("Carla",
+                "Design Patterns",
+                "Domain-Driven Design");
 
     }
 }
