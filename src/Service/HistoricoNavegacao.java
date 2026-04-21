@@ -5,7 +5,6 @@ import java.util.Stack;
 
 public class HistoricoNavegacao {
 
-
     // Atributos
     private String nomeUsuario;
     private Stack<String> historico;
@@ -35,8 +34,7 @@ public class HistoricoNavegacao {
         System.out.println("Visualização registrada: " + tituloLivro + " por " + nomeUsuario);
     }
 
-    //Retorna o livro mais recentemente visualizado sem remover.
-
+    //Retorna o livro mais recentemente visualizado
     public String ultimoLivroVisualizado() {
         if (historico.isEmpty()) {
             System.out.println("Histórico de " + nomeUsuario + " está vazio");
@@ -60,7 +58,7 @@ public class HistoricoNavegacao {
         }
     }
 
-    // Exibe o histórico de navegação do usuário, do mais recente ao mais antigo.
+    // Exibe o histórico de navegação do usuário
     public void exibirHistorico() {
         if (historico.isEmpty()) {
             System.out.println("O histórico de " + nomeUsuario + " está vazio.");

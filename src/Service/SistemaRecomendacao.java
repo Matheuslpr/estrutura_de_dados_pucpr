@@ -4,107 +4,58 @@ import Model.Livro;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SistemaRecomendacao {
 
-    private GrafoLivros grafo;
+    public static void main(String[] args) {
+        Biblioteca biblioteca = new Biblioteca();
 
-    public SistemaRecomendacao() {
-        this.grafo = new GrafoLivros();
-        popularGrafo();
-    }
+        Livro b1 = new Livro ("1984", "George Orwell", 1949);
+        Livro b2 = new Livro("Admirável Mundo Novo", "Aldous Huxley", 1932);
+        Livro b3 = new Livro("Fahrenheit 451", "Ray Bradbury", 1953);
+        Livro b4 = new Livro("O Conto da Aia", "Margaret Atwood", 1985);
+        Livro b5 = new Livro("Laranja Mecânica", "Anthony Burgess", 1962);
+        Livro b6 = new Livro("A Revolução dos Bichos", "George Orwell", 1945);
+        Livro b7 = new Livro("Neuromancer", "William Gibson", 1984);
+        Livro b8 = new Livro("Duna", "Frank Herbert", 1965);
+        Livro b9 = new Livro("Fundação", "Isaac Asimov", 1951);
+        Livro b10 = new Livro("2001: Uma Odisseia no Espaço", "Arthur C. Clarke", 1968);
 
-    // Monta o grafo com 12 livros e suas relações
-    private void popularGrafo() {
+        List<Livro> todosLivros = List.of(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10);
+        todosLivros.forEach(b -> {
+            b.updateLivroHash();
+            biblioteca.adicionarLivro(b);
+        });
 
-        Livro cleanCode    = new Livro("Clean Code",                       "Robert C. Martin", "Tecnologia");
-        Livro cleanArch    = new Livro("Clean Architecture",               "Robert C. Martin", "Tecnologia");
-        Livro pragProg     = new Livro("The Pragmatic Programmer",         "Hunt & Thomas",    "Tecnologia");
-        Livro refactoring  = new Livro("Refactoring",                      "Martin Fowler",    "Tecnologia");
-        Livro codComplete  = new Livro("Code Complete",                    "Steve McConnell",  "Tecnologia");
-        Livro designPatt   = new Livro("Design Patterns",                  "Gang of Four",     "Arquitetura");
-        Livro ddd          = new Livro("Domain-Driven Design",             "Eric Evans",       "Arquitetura");
-        Livro sysDesign    = new Livro("Designing Data-Intensive Apps",    "M. Kleppmann",     "Arquitetura");
-        Livro algorithms   = new Livro("Introduction to Algorithms",       "Cormen et al.",    "Algoritmos");
-        Livro sicp         = new Livro("Structure & Interpretation of CP", "Abelson",          "Algoritmos");
-        Livro mythMan      = new Livro("The Mythical Man-Month",           "Brooks",           "Engenharia");
-        Livro legacyCode   = new Livro("Working with Legacy Code",         "M. Feathers",      "Tecnologia");
+        biblioteca.addRecommendation(b1, b2);
+        biblioteca.addRecommendation(b1, b3);
+        biblioteca.addRecommendation(b2, b1);
+        biblioteca.addRecommendation(b2, b4);
+        biblioteca.addRecommendation(b3, b5);
+        biblioteca.addRecommendation(b3, b6);
+        biblioteca.addRecommendation(b4, b1);
+        biblioteca.addRecommendation(b4, b7);
+        biblioteca.addRecommendation(b5, b3);
+        biblioteca.addRecommendation(b5, b8);
+        biblioteca.addRecommendation(b6, b2);
+        biblioteca.addRecommendation(b6, b9);
+        biblioteca.addRecommendation(b7, b10);
+        biblioteca.addRecommendation(b7, b6);
+        biblioteca.addRecommendation(b8, b9);
+        biblioteca.addRecommendation(b8, b10);
+        biblioteca.addRecommendation(b9, b4);
+        biblioteca.addRecommendation(b9, b5);
+        biblioteca.addRecommendation(b10, b1);
+        biblioteca.addRecommendation(b10, b2);
 
-        // Cada livro tem pelo menos 2 relações
-        grafo.adicionarRelacao(cleanCode,   refactoring);
-        grafo.adicionarRelacao(cleanCode,   pragProg);
-        grafo.adicionarRelacao(cleanCode,   codComplete);
-        grafo.adicionarRelacao(cleanCode,   cleanArch);
+        Livro leituraAnterior = b1;
+        Set<Livro> recomendacoes = biblioteca.getRecommendations(leituraAnterior);
 
-        grafo.adicionarRelacao(cleanArch,   designPatt);
-        grafo.adicionarRelacao(cleanArch,   ddd);
-        grafo.adicionarRelacao(cleanArch,   sysDesign);
-
-        grafo.adicionarRelacao(pragProg,    codComplete);
-        grafo.adicionarRelacao(pragProg,    mythMan);
-
-        grafo.adicionarRelacao(refactoring, legacyCode);
-        grafo.adicionarRelacao(refactoring, designPatt);
-        grafo.adicionarRelacao(refactoring, codComplete);
-
-        grafo.adicionarRelacao(designPatt,  ddd);
-        grafo.adicionarRelacao(designPatt,  legacyCode);
-
-        grafo.adicionarRelacao(ddd,         sysDesign);
-
-        grafo.adicionarRelacao(algorithms,  sicp);
-        grafo.adicionarRelacao(algorithms,  sysDesign);
-
-        grafo.adicionarRelacao(mythMan,     codComplete);
-
-        grafo.adicionarRelacao(sicp,        codComplete);
-    }
-
-    // Recebe títulos lidos e imprime sugestões
-    public void recomendar(String nomeUsuario, String... titulosLidos) {
-        List<Livro> lidos = new ArrayList<>();
-
-        // Busca os objetos Livro no grafo pelos títulos informados
-        for (String titulo : titulosLidos) {
-            for (Livro l : grafo.getRelacionados(buscarPorTitulo(titulo))) {
-                // só precisamos do objeto — buscarPorTitulo já faz o trabalho
-            }
-            Livro encontrado = buscarPorTitulo(titulo);
-            if (encontrado != null) {
-                lidos.add(encontrado);
-            }
-        }
-
-        System.out.println("\n=== RECOMENDACOES PARA: " + nomeUsuario + " ===");
-        System.out.println("Livros lidos:");
-        for (Livro l : lidos) {
-            System.out.println("  [x] " + l);
-        }
-
-        List<Livro> sugestoes = grafo.sugerir(lidos);
-
-        if (sugestoes.isEmpty()) {
-            System.out.println("Nenhuma sugestao disponivel.");
-        } else {
-            System.out.println("Sugestoes:");
-            int rank = 1;
-            for (Livro s : sugestoes) {
-                System.out.println("  " + rank + ". " + s);
-                rank++;
-            }
-        }
-    }
-
-    // Percorre todos os nos do grafo e retorna o livro com o titulo informado
-    private Livro buscarPorTitulo(String titulo) {
-        for (Livro l : grafo.getRelacionados(new Livro("", "", ""))) {
-            // getRelacionados de livro vazio retorna vazio; precisamos iterar o grafo todo
-        }
-        // Acesso direto ao grafo via método auxiliar
-        return grafo.buscarPorTitulo(titulo);
-    }
-
-    public GrafoLivros getGrafo() {
-        return grafo;
+        System.out.println("\nUsuário leu: " + leituraAnterior.getTitulo());
+        System.out.println("Recomendações com base nessa leitura:");
+        recomendacoes.forEach(b ->
+                System.out.println(" - " + b.getTitulo() + " (" + b.getAutor() + ")")
+        );
     }
 }

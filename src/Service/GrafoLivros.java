@@ -10,9 +10,9 @@ import java.util.Set;
 
 public class GrafoLivros {
 
-    // Estrutura principal: cada livro aponta para o conjunto de livros relacionados
     private HashMap<Livro, Set<Livro>> grafo;
 
+    //construtor
     public GrafoLivros() {
         this.grafo = new HashMap<>();
     }
@@ -24,7 +24,7 @@ public class GrafoLivros {
         }
     }
 
-    // Cria relação bidirecional entre dois livros
+    // Cria relação entre dois livros
     public void adicionarRelacao(Livro a, Livro b) {
         adicionarLivro(a);
         adicionarLivro(b);
@@ -32,7 +32,7 @@ public class GrafoLivros {
         grafo.get(b).add(a);
     }
 
-    // Retorna os livros diretamente relacionados a um livro
+    // Retorna os livros diretamente relacionados
     public Set<Livro> getRelacionados(Livro livro) {
         if (grafo.containsKey(livro)) {
             return grafo.get(livro);
@@ -40,9 +40,7 @@ public class GrafoLivros {
         return new HashSet<>();
     }
 
-    // Sugere livros com base em uma lista de livros já lidos pelo usuário.
-    // Conta quantas vezes cada candidato aparece como vizinho dos livros lidos —
-    // quanto mais aparecer, mais relevante é a sugestão.
+    // Sugere livros com base nos livros lidos
     public List<Livro> sugerir(List<Livro> lidos) {
         Map<Livro, Integer> contagem = new HashMap<>();
 

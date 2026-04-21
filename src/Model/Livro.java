@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Livro {
@@ -8,26 +10,40 @@ public class Livro {
     private String titulo;
     private String autor;
     private int anoPublicacao;
-    private String genero;
+    private int  LivroHash;
+
+    private List<Integer> recomendacoes = new ArrayList<>();
 
     // Construtores
-    public Livro() {
-    }
 
-    public Livro(String titulo, String autor, int anoPublicacao , String genero) {
+    public Livro() { updateLivroHash(); }
+
+    public Livro(String titulo) {
         this.titulo = titulo;
-        this.autor = autor;
+        updateLivroHash(); }
+
+    public Livro(String titulo, String autor)   {
+        this(titulo);
+        this.autor = autor; }
+
+    public Livro(String titulo, String autor, int anoPublicacao) {
+        this(titulo, autor);
         this.anoPublicacao = anoPublicacao;
-        this.genero = genero;
     }
 
+
+
+    public void updateLivroHash() { this.LivroHash = hashCode(); }
+    private int generateCopyHash() {
+        return Objects.hash(titulo, autor, anoPublicacao, System.nanoTime());
+    }
     // Getters e Setters
-    public String getTitulo() {
-        return titulo;
+    public String getAutor() {
+        return autor;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setAutor(String autor) {
+        this.autor = autor;
     }
 
     public int getAnoPublicacao() {
@@ -38,35 +54,44 @@ public class Livro {
         this.anoPublicacao = anoPublicacao;
     }
 
-    public String getAutor() {
-        return autor;
+
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
+    public int getLivroHash() {
+        return LivroHash;
+    }
+
+    public void setLivroHash(int livroHash) {
+        LivroHash = livroHash;
+    }
+
+    public List<Integer> getRecomendacoes() {
+        return recomendacoes;
+    }
+
+    public void setRecomendacoes(List<Integer> recomendacoes) {
+        this.recomendacoes = recomendacoes;
+    }
+
+    // overrides
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Livro)) return false;
-        Livro livro = (Livro) o;
-        return Objects.equals(titulo, livro.titulo) &&
-                Objects.equals(autor,  livro.autor);
+        if (!(o instanceof Livro b)) return false;
+        return anoPublicacao == b.anoPublicacao &&
+                Objects.equals(titulo, b.titulo) &&
+                Objects.equals(autor, b.autor);
     }
-
     @Override
-    public int hashCode() {
-        return Objects.hash(titulo, autor);
-    }
+    public int hashCode() { return Objects.hash(titulo, autor, anoPublicacao); }
 
-    // Metodo toString para exibir as informações do livro
     @Override
     public String toString() {
-        return "Livros{" +
-                "titulo='" + titulo + '\'' +
-                ", autor='" + autor + '\'' +
-                ", anoPublicacao=" + anoPublicacao +
-                '}';
-    };
+        return "Book{" + titulo + " (" + autor + ", " + anoPublicacao + ")}";
+    }
 }
