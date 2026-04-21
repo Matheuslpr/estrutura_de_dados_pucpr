@@ -1,8 +1,7 @@
-package Controller;
+package Service;
 
 import Model.Livro;
 import Model.Usuario;
-import Service.Biblioteca;
 
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -1,6 +1,5 @@
 package Service;
 
-import Controller.HistoricoUsuario;
 import Model.Livro;
 import Model.Usuario;
 
