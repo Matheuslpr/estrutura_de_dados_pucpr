@@ -1,5 +1,6 @@
 package Service;
 
+import Algoritmo.GrafoAlgoritmos;
 import Model.Livro;
 import Model.Usuario;
 
@@ -69,4 +70,77 @@ public class Biblioteca {
     // Getters para fila de espera e histórico de usuário
     public FilaEspera getFilaEspera() { return filaEspera; }
     public HistoricoUsuario getHistoricoUsuario() { return historicoUsuario; }
+
+    // Dijkstra
+    public Map<Livro,Integer> getDistances(Livro origem){
+        Map<Livro,Integer> d = GrafoAlgoritmos.dijkstraSimple(
+                (HashMap<Livro,Set<Livro>>) recomendacaoGrafo, origem);
+        d.remove(origem);
+        return d;
+    }
+    public List<Map.Entry<Livro,Integer>> getDistancesOrdered(Livro origem){
+        Map<Livro,Integer> d = getDistances(origem);
+        return d.entrySet().stream()
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<Livro,Integer> e)->e.getValue())
+                                .thenComparing((Map.Entry<Livro,Integer> e)->e.getKey().getTitulo(),
+                                        String.CASE_INSENSITIVE_ORDER))
+                .toList();
+    }
+
+    // Exibe distâncias simples
+    public void displayDistances(Livro origem){
+        var ordered = getDistancesOrdered(origem);
+        if(ordered.isEmpty()){
+            System.out.println("Nenhum outro livro alcançável a partir de "+origem.getTitulo()+".");
+            return;
+        }
+        System.out.println("Distâncias (arestas) a partir de "+origem.getTitulo()+":");
+        ordered.forEach(e->
+                System.out.printf("  %d → %s%n", e.getValue(), e.getKey().getTitulo()));
+    }
+
+    // Passo‑a‑passo , caminho
+    public void displayDistancesVerbose(Livro origem){
+
+        HashMap<Livro,Set<Livro>> g = (HashMap<Livro,Set<Livro>>)recomendacaoGrafo;
+        Map<Livro,Integer> dist = new HashMap<>();
+        Map<Livro,Livro> pred   = new HashMap<>();
+        Queue<Livro> q        = new LinkedList<>();
+
+        dist.put(origem,0); q.add(origem);
+
+        System.out.println("== Início da BFS (Dijkstra não‑ponderado) ==");
+        while(!q.isEmpty()){
+            Livro cur = q.poll(); int d = dist.get(cur);
+            System.out.printf("Visitando %-30s | distância = %d%n",cur.getTitulo(),d);
+            for(Livro n:g.getOrDefault(cur,Collections.emptySet())){
+                if(!dist.containsKey(n)){
+                    dist.put(n,d+1); pred.put(n,cur); q.add(n);
+                    System.out.printf("  ↳ Descoberto %-27s | distância = %d%n",n.getTitulo(),d+1);
+                }
+            }
+        }
+        System.out.println("== Fim da BFS ==");
+
+        if(dist.size()==1){ System.out.println("Nenhum outro livro alcançável."); return; }
+
+        var ordered = dist.entrySet().stream()
+                .filter(e->!e.getKey().equals(origem))
+                .sorted(
+                        Comparator.comparingInt((Map.Entry<Livro,Integer> e)->e.getValue())
+                                .thenComparing((Map.Entry<Livro,Integer> e)->e.getKey().getTitulo(),
+                                        String.CASE_INSENSITIVE_ORDER))
+                .toList();
+
+        System.out.println("Distância e caminho (origem = "+origem.getTitulo()+"):");
+        for(var e:ordered){
+            Livro dest=e.getKey(); int dVal=e.getValue();
+            List<Livro> path=new ArrayList<>();
+            for(Livro at=dest; at!=null; at=pred.get(at)){ path.add(at); if(at.equals(origem)) break; }
+            Collections.reverse(path);
+            String pStr=path.stream().map(Livro::getTitulo).reduce((a,b)->a+" -> "+b).orElse(dest.getTitulo());
+            System.out.printf("  %d  | %s%n",dVal,pStr);
+        }
+    }
 }

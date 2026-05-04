@@ -8,6 +8,10 @@ import Service.GerenciadorBiblioteca;
 
 import java.util.*;
 
+/*
+ * projeto crud biblioteca virtual
+ * nome: Matheus Luiz Pereira Rodrigues
+ */
 public class Main {
 
     public static void main(String[] args) {
