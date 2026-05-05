@@ -20,7 +20,10 @@ public class Main {
         LinkedList<Livro> livros = GerenciadorBiblioteca.loadlivros();
         Map<String, Usuario> usuarios = GerenciadorBiblioteca.loadUsers();
 
-        livros.forEach(livro -> { livro.updateLivroHash(); biblioteca.adicionarLivro(livro); });
+        livros.forEach(livro -> {
+            livro.updateLivroHash();
+            biblioteca.adicionarLivro(livro);
+        });
         usuarios.values().forEach(u -> biblioteca.adicionarUser(u.getNome(), u.getEmail(), u.getUserId()));
 
         if (biblioteca.totalLivros() == 0) {
@@ -36,7 +39,11 @@ public class Main {
                     new Livro("O Apanhador no Campo de Centeio", "J.D. Salinger"),
                     new Livro("Moby Dick", "Herman Melville", 1851)
             };
-            for (Livro b : todos) { b.updateLivroHash(); biblioteca.adicionarLivro(b); livros.add(b); }
+            for (Livro b : todos) {
+                b.updateLivroHash();
+                biblioteca.adicionarLivro(b);
+                livros.add(b);
+            }
             GerenciadorBiblioteca.salvarLivros(livros, biblioteca);
         }
 
@@ -72,18 +79,29 @@ public class Main {
             System.out.println("15. Exibir histórico de um usuário");
             System.out.println("16. Exibir recomendações para um livro");
             System.out.println("17. Mostrar grafo completo");
+            System.out.println("18. Exibir recomendações para um livro");
+            System.out.println("19. Adicionar recomendação entre dois livros");
+            System.out.println("20. Mapa de distâncias (Dijkstra) a partir de um livro");
+            System.out.println("21. Traçar Dijkstra passo a passo");
+            System.out.println("22. Mostrar grafo completo");
             System.out.println("0. Fechar");
             System.out.print("Opção: ");
 
             String input = scanner.nextLine().trim();
-            try { option = input.isBlank() ? -1 : Integer.parseInt(input); }
-            catch (NumberFormatException e) { option = -1; }
+            try {
+                option = input.isBlank() ? -1 : Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                option = -1;
+            }
 
             switch (option) {
                 case 1 -> {
-                    System.out.print("Título: "); String titulo = scanner.nextLine();
-                    System.out.print("Autor: "); String autor = scanner.nextLine();
-                    System.out.print("Ano: "); int ano = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Título: ");
+                    String titulo = scanner.nextLine();
+                    System.out.print("Autor: ");
+                    String autor = scanner.nextLine();
+                    System.out.print("Ano: ");
+                    int ano = Integer.parseInt(scanner.nextLine());
                     Livro livro = new Livro(titulo, autor, ano);
                     livro.updateLivroHash();
                     biblioteca.adicionarLivro(livro);
@@ -93,13 +111,17 @@ public class Main {
                 }
                 case 2 -> biblioteca.displayLivros();
                 case 3 -> {
-                    System.out.print("Título (ou parte): "); String s = scanner.nextLine();
+                    System.out.print("Título (ou parte): ");
+                    String s = scanner.nextLine();
                     biblioteca.buscarPorTitulo(s).forEach(System.out::println);
                 }
                 case 4 -> {
-                    System.out.print("Nome: "); String nome = scanner.nextLine();
-                    System.out.print("Email: "); String email = scanner.nextLine();
-                    System.out.print("ID: "); String id = scanner.nextLine();
+                    System.out.print("Nome: ");
+                    String nome = scanner.nextLine();
+                    System.out.print("Email: ");
+                    String email = scanner.nextLine();
+                    System.out.print("ID: ");
+                    String id = scanner.nextLine();
                     Usuario u = new Usuario(nome, email, id);
                     biblioteca.adicionarUser(nome, email, id);
                     usuarios.put(id, u);
@@ -107,49 +129,60 @@ public class Main {
                     System.out.println("Usuário adicionado.");
                 }
                 case 5 -> biblioteca.displayUsuarios();
-                case 6-> {
-                    System.out.print("ID: "); String id = scanner.nextLine();
+                case 6 -> {
+                    System.out.print("ID: ");
+                    String id = scanner.nextLine();
                     biblioteca.getUsuario(id).ifPresentOrElse(System.out::println,
                             () -> System.out.println("Usuário não encontrado."));
                 }
                 case 7 -> {
-                    System.out.print("Título do livro: "); String title = scanner.nextLine();
+                    System.out.print("Título do livro: ");
+                    String title = scanner.nextLine();
                     for (Livro livro : biblioteca.buscarPorTitulo(title)) {
-                        System.out.print("Novo título (ou Enter): "); String t = scanner.nextLine();
+                        System.out.print("Novo título (ou Enter): ");
+                        String t = scanner.nextLine();
                         if (!t.isBlank()) livro.setTitulo(t);
-                        System.out.print("Novo autor (ou Enter): "); String a = scanner.nextLine();
+                        System.out.print("Novo autor (ou Enter): ");
+                        String a = scanner.nextLine();
                         if (!a.isBlank()) livro.setAutor(a);
-                        System.out.print("Novo ano (ou Enter): "); String y = scanner.nextLine();
+                        System.out.print("Novo ano (ou Enter): ");
+                        String y = scanner.nextLine();
                         if (!y.isBlank()) livro.setAnoPublicacao(Integer.parseInt(y));
                         livro.updateLivroHash();
                     }
                     GerenciadorBiblioteca.salvarLivros(livros, biblioteca);
                 }
                 case 8 -> {
-                    System.out.print("ID do usuário: "); String id = scanner.nextLine();
+                    System.out.print("ID do usuário: ");
+                    String id = scanner.nextLine();
                     biblioteca.getUsuario(id).ifPresent(user -> {
-                        System.out.print("Novo nome (ou Enter): "); String n = scanner.nextLine();
+                        System.out.print("Novo nome (ou Enter): ");
+                        String n = scanner.nextLine();
                         if (!n.isBlank()) user.setNome(n);
-                        System.out.print("Novo email (ou Enter): "); String e = scanner.nextLine();
+                        System.out.print("Novo email (ou Enter): ");
+                        String e = scanner.nextLine();
                         if (!e.isBlank()) user.setEmail(e);
                     });
                     GerenciadorBiblioteca.salvarUsers(usuarios);
                 }
                 case 9 -> {
-                    System.out.print("Título: "); String title = scanner.nextLine();
+                    System.out.print("Título: ");
+                    String title = scanner.nextLine();
                     List<Livro> toRemove = biblioteca.buscarPorTitulo(title);
                     toRemove.forEach(biblioteca::removerLivro);
                     livros.removeAll(toRemove);
                     GerenciadorBiblioteca.salvarLivros(livros, biblioteca);
                 }
                 case 10 -> {
-                    System.out.print("ID: "); String id = scanner.nextLine();
+                    System.out.print("ID: ");
+                    String id = scanner.nextLine();
                     biblioteca.removerUser(id);
                     usuarios.remove(id);
                     GerenciadorBiblioteca.salvarUsers(usuarios);
                 }
                 case 11 -> {
-                    System.out.print("Título: "); String title = scanner.nextLine();
+                    System.out.print("Título: ");
+                    String title = scanner.nextLine();
                     biblioteca.buscarPorTitulo(title)
                             .forEach(b -> System.out.println("Hash: " + b.getLivroHash()));
                 }
@@ -159,58 +192,148 @@ public class Main {
                     System.out.println("Tudo salvo.");
                 }
                 case 13 -> {
-                    System.out.print("ID do usuário: "); String userId = scanner.nextLine();
+                    System.out.print("ID do usuário: ");
+                    String userId = scanner.nextLine();
                     var maybeUser = biblioteca.getUsuario(userId);
-                    if (maybeUser.isEmpty()) { System.out.println("Usuário não encontrado."); break; }
-                    System.out.print("Título do livro: "); String title = scanner.nextLine();
+                    if (maybeUser.isEmpty()) {
+                        System.out.println("Usuário não encontrado.");
+                        break;
+                    }
+                    System.out.print("Título do livro: ");
+                    String title = scanner.nextLine();
                     List<Livro> encontrados = biblioteca.buscarPorTitulo(title);
-                    if (encontrados.isEmpty()) { System.out.println("Livro não encontrado."); }
-                    else {
+                    if (encontrados.isEmpty()) {
+                        System.out.println("Livro não encontrado.");
+                    } else {
                         Livro livro = encontrados.get(0);
                         biblioteca.getFilaEspera().adicionarFila(livro.getLivroHash(), maybeUser.get());
                         System.out.println("Usuário adicionado à fila de '" + livro.getTitulo() + "'.");
                     }
                 }
                 case 14 -> {
-                    System.out.print("Título do livro: "); String title = scanner.nextLine();
+                    System.out.print("Título do livro: ");
+                    String title = scanner.nextLine();
                     List<Livro> encontrados = biblioteca.buscarPorTitulo(title);
-                    if (encontrados.isEmpty()) { System.out.println("Livro não encontrado."); }
-                    else {
+                    if (encontrados.isEmpty()) {
+                        System.out.println("Livro não encontrado.");
+                    } else {
                         Livro livro = encontrados.get(0);
                         var fila = biblioteca.getFilaEspera().verFila(livro.getLivroHash());
                         if (fila.isEmpty()) System.out.println("Fila vazia para este livro.");
-                        else { System.out.println("Fila de '" + livro.getTitulo() + "':"); fila.forEach(u -> System.out.println(" - " + u.getNome())); }
+                        else {
+                            System.out.println("Fila de '" + livro.getTitulo() + "':");
+                            fila.forEach(u -> System.out.println(" - " + u.getNome()));
+                        }
                     }
                 }
                 case 15 -> {
-                    System.out.print("ID do usuário: "); String userId = scanner.nextLine();
+                    System.out.print("ID do usuário: ");
+                    String userId = scanner.nextLine();
                     var maybeUser = biblioteca.getUsuario(userId);
-                    if (maybeUser.isEmpty()) { System.out.println("Usuário não encontrado."); }
-                    else {
+                    if (maybeUser.isEmpty()) {
+                        System.out.println("Usuário não encontrado.");
+                    } else {
                         var hist = biblioteca.getHistoricoUsuario().verHistoricoUs(userId);
                         if (hist.isEmpty()) System.out.println("Sem histórico.");
-                        else { System.out.println("Histórico de " + maybeUser.get().getNome() + ":"); hist.forEach(b -> System.out.println(" - " + b.getTitulo())); }
+                        else {
+                            System.out.println("Histórico de " + maybeUser.get().getNome() + ":");
+                            hist.forEach(b -> System.out.println(" - " + b.getTitulo()));
+                        }
                     }
                 }
                 case 16 -> {
-                    System.out.print("Título: "); String title = scanner.nextLine();
+                    System.out.print("Título: ");
+                    String title = scanner.nextLine();
                     List<Livro> encontrados = biblioteca.buscarPorTitulo(title);
-                    if (encontrados.isEmpty()) { System.out.println("Livro não encontrado."); }
-                    else {
+                    if (encontrados.isEmpty()) {
+                        System.out.println("Livro não encontrado.");
+                    } else {
                         Set<Livro> recs = biblioteca.getRecommendations(encontrados.get(0));
                         if (recs.isEmpty()) System.out.println("Sem recomendações.");
-                        else { System.out.println("Recomendações:"); recs.forEach(r -> System.out.println(" - " + r.getTitulo())); }
+                        else {
+                            System.out.println("Recomendações:");
+                            recs.forEach(r -> System.out.println(" - " + r.getTitulo()));
+                        }
                     }
                 }
                 case 17 -> biblioteca.displayRecommendationGraph();
-                case 0 -> { GerenciadorBiblioteca.salvarLivros(livros, biblioteca); GerenciadorBiblioteca.salvarUsers(usuarios); System.out.println("Fechando biblioteca..."); }
+                case 0 -> {
+                    GerenciadorBiblioteca.salvarLivros(livros, biblioteca);
+                    GerenciadorBiblioteca.salvarUsers(usuarios);
+                    System.out.println("Fechando biblioteca...");
+                }
                 default -> System.out.println("Opção inválida.");
+
+                case 18 -> {
+                    System.out.print("Título do livro para ver recomendações: ");
+                    String titulo = scanner.nextLine();
+                    List<Livro> encontrados = biblioteca.buscarPorTitulo(titulo);
+                    if (encontrados.isEmpty()) {
+                        System.out.println("Livro não encontrado.");
+                    } else {
+                        Livro livro = encontrados.get(0);
+                        Set<Livro> recs = biblioteca.getRecommendations(livro);
+                        if (recs.isEmpty()) {
+                            System.out.println("Sem recomendações disponíveis.");
+                        } else {
+                            System.out.println("Recomendações:");
+                            recs.forEach(r -> System.out.println(" - " + r.getTitulo()));
+                        }
+                    }
+                }
+
+                case 20 -> {
+                    System.out.print("Livro base: ");
+                    String base = scanner.nextLine();
+                    System.out.print("Livro recomendado: ");
+                    String rec = scanner.nextLine();
+                    List<Livro> baseList = biblioteca.buscarPorTitulo(base);
+                    List<Livro> recList = biblioteca.buscarPorTitulo(rec);
+                    if (baseList.isEmpty() || recList.isEmpty()) {
+                        System.out.println("Livro(s) não encontrado(s).");
+                    } else {
+                        biblioteca.addRecommendation(baseList.get(0), recList.get(0));
+                        GerenciadorBiblioteca.salvarLivros(livros, biblioteca);
+                        System.out.println("Recomendação adicionada.");
+                    }
+                }
+                case 21 -> {
+                    System.out.print("Título do livro de origem: ");
+                    String titulo = scanner.nextLine();
+                    List<Livro> encontrados = biblioteca.buscarPorTitulo(titulo);
+                    if (encontrados.isEmpty()) {
+                        System.out.println("Livro não encontrado.");
+                    } else {
+                        Livro origem = encontrados.get(0);
+                        biblioteca.displayDistances(origem);
+                    }
+                }
+                case 22 -> {
+                    System.out.print("Livro de origem: ");
+                    String titulo = scanner.nextLine();
+                    List<Livro> encontrados = biblioteca.buscarPorTitulo(titulo);
+                    if (encontrados.isEmpty()) {
+                        System.out.println("Livro não encontrado.");
+                    } else {
+                        biblioteca.displayDistancesVerbose(encontrados.get(0));
+                    }
+                }
+                case 23 -> {
+                    biblioteca.displayRecommendationGraph();
+                }
+
+                if (option != 0) {
+                    System.out.print("[ENTER] para continuar... ");
+                    scanner.nextLine();
+
+                }
+                while (option != 0) ;
+
+                scanner.close();
             }
 
-            if (option != 0) { System.out.print("[ENTER] para continuar... "); scanner.nextLine(); }
+        }
 
-        } while (option != 0);
-
-        scanner.close();
     }
+
 }
